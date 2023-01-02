@@ -1,57 +1,11 @@
 module.exports = {
-    env: {
-        browser: true,
-        es2021: true,
-        node: true,
-        jest: true,
-    },
-    // extends: 'standard-with-typescript',
-    extends: [
-        "standard-with-typescript",
-        "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:eslint-comments/recommended",
-        "plugin:jest/recommended",
-        "plugin:promise/recommended",
-        "plugin:import/errors",
-        "plugin:import/warnings",
-        "plugin:import/typescript",
-        "prettier",
-    ],
-    overrides: [],
+    parser: "@typescript-eslint/parser",
     parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
+        ecmaVersion: "latest", // Allows the use of modern ECMAScript features
+        sourceType: "module", // Allows for the use of imports
     },
-    plugins: ["@typescript-eslint", "eslint-comments", "jest", "promise", "import", "prettier"],
-    rules: {
-        "prettier/prettier": "error",
-        "import/prefer-default-export": "off",
-        "import/no-default-export": "error",
-        "no-use-before-define": [
-            "error",
-            {
-                functions: false,
-                classes: true,
-                variables: true,
-            },
-        ],
-        "@typescript-eslint/no-use-before-define": [
-            "error",
-            {
-                functions: false,
-                classes: true,
-                variables: true,
-                typedefs: true,
-            },
-        ],
-    },
-    settings: {
-        "import/resolver": {
-            typescript: {
-                alwaysTryTypes: true,
-                project: "./tsconfig.json",
-            },
-        },
+    extends: ["plugin:@typescript-eslint/recommended"], // Uses the linting rules from @typescript-eslint/eslint-plugin
+    env: {
+        node: true, // Enable Node.js global variables
     },
 };
