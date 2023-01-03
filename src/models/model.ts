@@ -7,8 +7,6 @@ interface User {
   hobbies: string[] | [];
 }
 
-// type NewUser = Omit<User, "id">;
-
 let usersData: User[] = [
   {
     id: "309ee828-8420-4321-9d81-cdadd435a387",

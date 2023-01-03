@@ -2,7 +2,7 @@ import http from "http";
 import { getUsersData, getUserById, getNewUser, getUpdatedUser, remove } from "../models/model.js";
 import { getNewData } from "../service/services.js";
 
-type GetUsers = (req: http.IncomingMessage, res: http.ServerResponse, id?: string) => void;
+export type GetUsers = (req: http.IncomingMessage, res: http.ServerResponse, id?: string) => void;
 interface User {
   id?: string;
   name: string;
@@ -10,7 +10,11 @@ interface User {
   hobbies: string[] | [];
 }
 
-export const getUsers: GetUsers = async (req, res) => {
+interface MethodsMap {
+  [key: string]: GetUsers;
+}
+
+const getUsers: GetUsers = async (req, res) => {
   try {
     const users: User[] = await getUsersData();
 
@@ -20,10 +24,12 @@ export const getUsers: GetUsers = async (req, res) => {
     // res.writeHead(404, { "Content-Type": "application/json" });
     // res.end(JSON.stringify(error));
     console.log(error);
+    res.writeHead(500, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "Internal Server Error" }));
   }
 };
 
-export const getUser: GetUsers = async (req, res, id) => {
+const getUser: GetUsers = async (req, res, id) => {
   try {
     const user: User = await getUserById(id);
 
@@ -36,30 +42,48 @@ export const getUser: GetUsers = async (req, res, id) => {
     }
   } catch (error) {
     console.log(error);
+    res.writeHead(500, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "Internal Server Error" }));
   }
 };
 
-export const createNewUser: GetUsers = async (req, res) => {
+const createNewUser: GetUsers = async (req, res) => {
   try {
     const body = await getNewData(req);
     const { name, age, hobbies } = JSON.parse(body);
 
-    const user: User = {
-      name,
-      age,
-      hobbies,
-    };
+    if (
+      name &&
+      age &&
+      hobbies &&
+      typeof age === "number" &&
+      typeof name === "string" &&
+      typeof hobbies === "object"
+    ) {
+      const user: User = {
+        name,
+        age,
+        hobbies,
+      };
 
-    const newUser = await getNewUser(user);
+      console.log(typeof hobbies);
 
-    res.writeHead(201, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(newUser));
+      const newUser = await getNewUser(user);
+
+      res.writeHead(201, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(newUser));
+    } else {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "Body does not contain required fields" }));
+    }
   } catch (error) {
     console.log(error);
+    res.writeHead(500, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "Internal Server Error" }));
   }
 };
 
-export const updateUser: GetUsers = async (req, res, id) => {
+const updateUser: GetUsers = async (req, res, id) => {
   try {
     const user: User = await getUserById(id);
 
@@ -83,10 +107,12 @@ export const updateUser: GetUsers = async (req, res, id) => {
     }
   } catch (error) {
     console.log(error);
+    res.writeHead(500, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "Internal Server Error" }));
   }
 };
 
-export const removeUser: GetUsers = async (req, res, id) => {
+const removeUser: GetUsers = async (req, res, id) => {
   try {
     const user: User | unknown = await getUserById(id);
 
@@ -101,5 +127,15 @@ export const removeUser: GetUsers = async (req, res, id) => {
     }
   } catch (error) {
     console.log(error);
+    res.writeHead(500, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "Internal Server Error" }));
   }
+};
+
+export const methodsMap: MethodsMap = {
+  GET: getUsers,
+  POST: createNewUser,
+  GET_id: getUser,
+  PUT_id: updateUser,
+  DELETE_id: removeUser,
 };
