@@ -1,6 +1,7 @@
 import http from "http";
 import { getUsersData, getUserById, getNewUser, getUpdatedUser, remove } from "../models/model.js";
-import { getNewData } from "../service/services.js";
+import { getNewData, handleErrorResolve, handleSuccessResolve } from "../service/services.js";
+import { newUserTypeGuard } from "../validators/new-user-type-guard.js";
 
 export type GetUsers = (req: http.IncomingMessage, res: http.ServerResponse, id?: string) => void;
 interface User {
@@ -18,14 +19,9 @@ const getUsers: GetUsers = async (req, res) => {
   try {
     const users: User[] = await getUsersData();
 
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(users));
+    handleSuccessResolve(res, 200, users);
   } catch (error) {
-    // res.writeHead(404, { "Content-Type": "application/json" });
-    // res.end(JSON.stringify(error));
-    console.log(error);
-    res.writeHead(500, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Internal Server Error" }));
+    handleErrorResolve(res, 500, error);
   }
 };
 
@@ -34,16 +30,12 @@ const getUser: GetUsers = async (req, res, id) => {
     const user: User = await getUserById(id);
 
     if (user) {
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify(user));
+      handleSuccessResolve(res, 200, user);
     } else {
-      res.writeHead(404, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ message: "User doesn't exist" }));
+      handleErrorResolve(res, 404);
     }
   } catch (error) {
-    console.log(error);
-    res.writeHead(500, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Internal Server Error" }));
+    handleErrorResolve(res, 500, error);
   }
 };
 
@@ -52,34 +44,21 @@ const createNewUser: GetUsers = async (req, res) => {
     const body = await getNewData(req);
     const { name, age, hobbies } = JSON.parse(body);
 
-    if (
-      name &&
-      age &&
-      hobbies &&
-      typeof age === "number" &&
-      typeof name === "string" &&
-      typeof hobbies === "object"
-    ) {
+    if (newUserTypeGuard(body)) {
       const user: User = {
         name,
         age,
         hobbies,
       };
 
-      console.log(typeof hobbies);
-
       const newUser = await getNewUser(user);
 
-      res.writeHead(201, { "Content-Type": "application/json" });
-      res.end(JSON.stringify(newUser));
+      handleSuccessResolve(res, 201, newUser);
     } else {
-      res.writeHead(400, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ message: "Body does not contain required fields" }));
+      handleErrorResolve(res, 400);
     }
   } catch (error) {
-    console.log(error);
-    res.writeHead(500, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Internal Server Error" }));
+    handleErrorResolve(res, 500, error);
   }
 };
 
@@ -97,18 +76,14 @@ const updateUser: GetUsers = async (req, res, id) => {
         hobbies: hobbies || user.hobbies,
       };
 
-      const newUser = await getUpdatedUser(id, userData);
+      const updatedUser = await getUpdatedUser(id, userData);
 
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify(newUser));
+      handleSuccessResolve(res, 200, updatedUser);
     } else {
-      res.writeHead(404, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ message: "User doesn't exist" }));
+      handleErrorResolve(res, 404);
     }
   } catch (error) {
-    console.log(error);
-    res.writeHead(500, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Internal Server Error" }));
+    handleErrorResolve(res, 500, error);
   }
 };
 
@@ -119,16 +94,12 @@ const removeUser: GetUsers = async (req, res, id) => {
     if (user) {
       await remove(id);
 
-      res.writeHead(204, { "Content-Type": "application/json" });
-      res.end(JSON.stringify("User was deleted"));
+      handleSuccessResolve(res, 204);
     } else {
-      res.writeHead(404, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ message: "User doesn't exist" }));
+      handleErrorResolve(res, 404);
     }
   } catch (error) {
-    console.log(error);
-    res.writeHead(500, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Internal Server Error" }));
+    handleErrorResolve(res, 500, error);
   }
 };
 
