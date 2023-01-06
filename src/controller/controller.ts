@@ -1,7 +1,7 @@
-import http from "http";
-import { getUsersData, getUserById, getNewUser, getUpdatedUser, remove } from "../models/model.js";
-import { getNewData, handleErrorResolve, handleSuccessResolve } from "../service/services.js";
-import { newUserTypeGuard } from "../validators/new-user-type-guard.js";
+import * as http from "http";
+import { getUsersData, getUserById, getNewUser, getUpdatedUser, remove } from "../models/model";
+import { getNewData, handleErrorResolve, handleSuccessResolve } from "../service/services";
+import { newUserTypeGuard } from "../validators/new-user-type-guard";
 
 export type GetUsers = (req: http.IncomingMessage, res: http.ServerResponse, id?: string) => void;
 interface User {
@@ -27,7 +27,7 @@ const getUsers: GetUsers = async (req, res) => {
 
 const getUser: GetUsers = async (req, res, id) => {
   try {
-    const user: User = await getUserById(id);
+    const user = await getUserById(id);
 
     if (user) {
       handleSuccessResolve(res, 200, user);
@@ -64,9 +64,9 @@ const createNewUser: GetUsers = async (req, res) => {
 
 const updateUser: GetUsers = async (req, res, id) => {
   try {
-    const user: User = await getUserById(id);
+    const user = await getUserById(id);
 
-    if (user) {
+    if (user && id) {
       const body = await getNewData(req);
       const { name, age, hobbies } = JSON.parse(body);
 
@@ -89,9 +89,9 @@ const updateUser: GetUsers = async (req, res, id) => {
 
 const removeUser: GetUsers = async (req, res, id) => {
   try {
-    const user: User | unknown = await getUserById(id);
+    const user = await getUserById(id);
 
-    if (user) {
+    if (user && id) {
       await remove(id);
 
       handleSuccessResolve(res, 204);

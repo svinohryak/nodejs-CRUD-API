@@ -7,5 +7,11 @@
   "_": "",
   "__": "для такого nodemon подходит такой скрипт старта",
   "start": "ts-node ./src/index.ts",
-  "start:dev": "nodemon"
+  "start:dev": "nodemon",
+  "--": "",
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
+  }
 }

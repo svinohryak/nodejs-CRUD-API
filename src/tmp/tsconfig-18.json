@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
-    "module": "CommonJS",
+    "lib": ["es2022"],
+    "module": "commonjs",
+    "target": "es2022",
+
+    "strict": true,
     "esModuleInterop": true,
-    "target": "ES2016",
-    "outDir": "dist",
-    "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "rootDir": "./",
-    "strict": true
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node"
   },
   "ts-node": {
     "esm": true

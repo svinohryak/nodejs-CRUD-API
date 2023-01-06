@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "ts-node ./src/index.ts",
+    "start": "ts-node --esm ./src/index.ts",
     "start:dev": "nodemon",
-    "start:prod": "webpack && node ./dist/bundle.js",
     "build": "tsc",
     "build:webpack": "webpack",
+    "start:prod": "",
     "start:multi": "",
     "test": ""
   },

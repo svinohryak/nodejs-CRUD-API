@@ -1,5 +1,5 @@
-import http from "http";
-import { User } from "../models/model.js";
+import * as http from "http";
+import { User } from "../models/model";
 
 const errorMessages = {
   400: "Body does not contain required fields or data type is wrong",
@@ -28,7 +28,7 @@ export const getNewData = (req: http.IncomingMessage) => {
   });
 };
 
-export const handleErrorResolve = (res: http.ServerResponse, code: ErrorCodes, error?: object) => {
+export const handleErrorResolve = (res: http.ServerResponse, code: ErrorCodes, error?: unknown) => {
   if (error) {
     console.log(error);
   }

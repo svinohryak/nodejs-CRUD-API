@@ -28,8 +28,8 @@ export const getUsersData = () => {
   });
 };
 
-export const getUserById = (id: string) => {
-  return new Promise<User>((resolve) => {
+export const getUserById = (id?: string) => {
+  return new Promise<User | undefined>((resolve) => {
     const user = usersData.find((u) => u.id === id);
     resolve(user);
   });
