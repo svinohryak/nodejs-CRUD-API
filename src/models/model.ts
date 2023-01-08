@@ -7,20 +7,7 @@ export interface User {
   hobbies: string[] | [];
 }
 
-let usersData: User[] = [
-  {
-    id: "309ee828-8420-4321-9d81-cdadd435a387",
-    name: "Sasha",
-    age: 35,
-    hobbies: ["coding"],
-  },
-  {
-    id: "27398f2f-1ae0-4a20-8f67-47f7f036fc67",
-    name: "Liza",
-    age: 35,
-    hobbies: ["drinking coffee"],
-  },
-];
+let usersData: User[] = [];
 
 export const getUsersData = () => {
   return new Promise<User[]>((resolve) => {

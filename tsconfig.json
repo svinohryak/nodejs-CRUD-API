@@ -13,5 +13,5 @@
     "esm": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "webpack", "jest"]
+  "exclude": ["node_modules", "dist", "webpack", "jest", "__test__"]
 }
