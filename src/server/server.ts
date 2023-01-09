@@ -11,12 +11,12 @@ export const server = http.createServer((req: http.IncomingMessage, res: http.Se
     return res.end(JSON.stringify({ message: "User Id is invalid" }));
   }
 
-  if ((req.method === "GET" || req.method === "POST") && req.url === "/api/users") {
+  if (req.url === "/api/users" && (req.method === "GET" || req.method === "POST")) {
     methodsMap[req.method](req, res);
   } else if (
     id &&
     req.url === `/api/users/${id}` &&
-    (req.method === "GET" || req.method === "PUT" || req.method === "DELETE")
+    (req.method === "GET" || req.method === "PUT" || req.method === "DELETE" || req.method === "PATCH")
   ) {
     methodsMap[`${req.method}_id`](req, res, id);
   } else {

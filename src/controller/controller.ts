@@ -65,6 +65,34 @@ const createNewUser: GetUsers = async (req, res) => {
 const updateUser: GetUsers = async (req, res, id) => {
   try {
     const user = await getUserById(id);
+    const body = await getNewData(req);
+    const { name, age, hobbies } = JSON.parse(body);
+
+    if (!newUserTypeGuard(body)) {
+      return handleErrorResolve(res, 400);
+    }
+
+    if (user && id) {
+      const userData: User = {
+        name: name,
+        age: age,
+        hobbies: hobbies,
+      };
+
+      const updatedUser = await getUpdatedUser(id, userData);
+
+      handleSuccessResolve(res, 200, updatedUser);
+    } else {
+      handleErrorResolve(res, 404);
+    }
+  } catch (error) {
+    handleErrorResolve(res, 500, error);
+  }
+};
+
+const updateUserPartially: GetUsers = async (req, res, id) => {
+  try {
+    const user = await getUserById(id);
 
     if (user && id) {
       const body = await getNewData(req);
@@ -106,6 +134,7 @@ const removeUser: GetUsers = async (req, res, id) => {
 export const methodsMap: MethodsMap = {
   GET: getUsers,
   POST: createNewUser,
+  PATCH_id: updateUserPartially,
   GET_id: getUser,
   PUT_id: updateUser,
   DELETE_id: removeUser,
