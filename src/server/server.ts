@@ -1,5 +1,6 @@
 import * as http from "http";
 import { methodsMap } from "../controller/controller";
+import { routeIdValidator, routeValidator } from "../validators/route-validator";
 import { userIdValidator } from "../validators/user-id-validator";
 
 export const server = http.createServer((req: http.IncomingMessage, res: http.ServerResponse) => {
@@ -11,13 +12,9 @@ export const server = http.createServer((req: http.IncomingMessage, res: http.Se
     return res.end(JSON.stringify({ message: "User Id is invalid" }));
   }
 
-  if (req.url === "/api/users" && (req.method === "GET" || req.method === "POST")) {
-    methodsMap[req.method](req, res);
-  } else if (
-    id &&
-    req.url === `/api/users/${id}` &&
-    (req.method === "GET" || req.method === "PUT" || req.method === "DELETE" || req.method === "PATCH")
-  ) {
+  if (routeValidator(req)) {
+    methodsMap[`${req.method}`](req, res);
+  } else if (routeIdValidator(req, id)) {
     methodsMap[`${req.method}_id`](req, res, id);
   } else {
     res.writeHead(404, { "Content-Type": "application/json" });
