@@ -7,11 +7,10 @@
     "start": "ts-node ./src/index.ts",
     "start:dev": "nodemon",
     "start:prod": "webpack && node ./dist/bundle.js",
+    "start:multi": "ts-node ./src/multi.ts",
     "build": "tsc",
     "build:webpack": "webpack",
     "test": "jest",
-    "start:multi": "",
-    "test:test": "jest --coverage",
     "test:watch": "jest --watch"
   },
   "repository": {

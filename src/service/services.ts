@@ -30,6 +30,11 @@ export const getNewData = (req: http.IncomingMessage) => {
 
 export const handleErrorResolve = (res: http.ServerResponse, code: ErrorCodes, error?: unknown) => {
   if (error) {
+    if (error instanceof SyntaxError && error.message.includes("JSON")) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "Error in JSON" }));
+      return;
+    }
     console.log(error);
   }
 
